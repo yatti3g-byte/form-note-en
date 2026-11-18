@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to use Form Note</title>
+<style>
+:root{--bg:#eef2ee;--panel:#fff;--line:#c9d4cc;--ink:#14201c;--mute:#4f6158;--acc:#0f6b4a;--accInk:#fff;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a16;--panel:#18251f;--line:#2b3d35;--ink:#e6efe9;--mute:#9db0a5;--acc:#ffd23f;--accInk:#14201c;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 64px}
+h1{font-size:2rem;line-height:1.25;margin:8px 0 8px;letter-spacing:-.01em}
+h2{font-size:1.35rem;line-height:1.3;margin:2.4rem 0 .6rem}
+h3{font-size:1.05rem;margin:1.4rem 0 .2rem}
+p{margin:.4rem 0}
+.lead{color:var(--mute);font-size:1.05rem;max-width:60ch}
+.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 1.1rem;border-radius:8px;background:var(--acc);color:var(--accInk);font-weight:600;text-decoration:none;margin-top:.8rem}
+.btn:focus-visible,a:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+a{color:var(--acc)}
+.shot{display:block;width:100%;max-width:420px;height:auto;margin:1.4rem auto .2rem;border-radius:12px;border:1px solid var(--line)}
+.cap{color:var(--mute);font-size:.9rem;margin:0 auto 1rem;max-width:420px}
+.gif{display:block;width:100%;max-width:300px;height:auto;margin:.8rem 0 .2rem;border-radius:12px;border:1px solid var(--line)}
+.gifcap{color:var(--mute);font-size:.9rem;margin:0}
+ol.steps{list-style:none;counter-reset:s;padding:0;margin:1rem 0}
+ol.steps>li{counter-increment:s;position:relative;padding:0 0 1.4rem 3.2rem}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:.05rem;width:2.2rem;height:2.2rem;border-radius:50%;background:var(--acc);color:var(--accInk);display:grid;place-items:center;font-weight:700}
+ol.steps h3{margin:0 0 .15rem}
+table{width:100%;border-collapse:collapse;margin:.6rem 0;font-size:.97rem}
+th,td{text-align:left;vertical-align:top;padding:.6rem .7rem;border-bottom:1px solid var(--line)}
+th{font-weight:600;width:34%}
+details{border-bottom:1px solid var(--line);padding:.7rem 0}
+summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+details p{margin:.2rem 0 .5rem;color:var(--mute)}
+.note{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem;margin:1.2rem 0}
+ul{padding-left:1.2rem}
+li{margin:.25rem 0}
+footer{margin-top:2.4rem;color:var(--mute);font-size:.92rem}
+</style>
+</head>
+<body>
+<main>
+<h1>How to use Form Note</h1>
+<p class="lead">Review baseball mechanics with video. Step through a clip frame by frame, draw lines, measure angles, and compare two clips side by side. Your videos stay on your device.</p>
+<a class="btn" href="./">Open the app</a>
+
+<img class="shot" src="screenshot.jpg" width="1236" height="2430" alt="Form Note comparing two pitching clips side by side, with the elbow angle measured on each clip (110 degrees and 87 degrees), and the drawing and frame controls below.">
+<p class="cap">Sample clips are illustrations, not real players.</p>
+
+<h2>Quick start</h2>
+<ol class="steps">
+<li><h3>Choose a video</h3><p>Tap <b>Choose video</b> and pick a clip from your phone. To compare two clips, tap <b>Compare side by side</b> first, then choose a second video for B. Both landscape and portrait videos are supported automatically.</p></li>
+<li><h3>Find the moment</h3><p>Tap <b>Frame ▶</b> or <b>◀ Frame</b> to move one frame at a time. Drag the slider to jump around, or tap <b>Play</b> and set the speed from 0.1x to 1x. With <b>Sync A &amp; B</b> on, both videos move together.</p><img class="gif" src="frame-step.gif" width="412" height="810" alt="Each tap on Frame ▶ moves both videos forward by one frame, and the time display changes."><p class="gifcap">Each tap on <b>Frame ▶</b> moves one frame. The players are illustrations.</p></li>
+<li><h3>Draw and measure</h3><p>Pick a tool, then draw on the video. Your drawings stay on screen as you move through frames, so you can check whether a position changes.</p></li>
+<li><h3>Save a still image</h3><p>Tap <b>Save still</b> to save a still image with your annotations. The app’s name and link are added at the bottom, so anyone you share it with can find the app. Press and hold the image to save it, or take a screenshot, then send it to your coach.</p></li>
+</ol>
+
+<h2>Drawing tools</h2>
+<table>
+<tr><th>Line</th><td>Drag from one point to another. Good for checking a straight edge, such as a vertical line through the head.</td></tr>
+<tr><th>Angle (tap 3 points)</th><td>Tap three points in order. The angle is measured at the middle point and shown on the video. For an elbow, tap shoulder, elbow, then wrist.</td></tr>
+<tr><th>Freehand</th><td>Drag to draw any shape.</td></tr>
+<tr><th>Color</th><td>Change the color of the next line you draw.</td></tr>
+<tr><th>Undo</th><td>Removes the last point or drawing on the selected video.</td></tr>
+<tr><th>Clear all</th><td>Removes all drawings on the selected video.</td></tr>
+</table>
+
+<h2>Playback settings</h2>
+<table>
+<tr><th>Speed</th><td>0.1x, 0.25x, 0.5x or 1x. Slower speeds make fast motion easier to see.</td></tr>
+<tr><th>fps</th><td>Set this to the frame rate you filmed at (for example 30, 60 or 240). It decides how far <b>Frame</b> moves, so one tap should equal one frame of your video.</td></tr>
+<tr><th>Compare side by side</th><td>Shows videos A and B together. Tap <b>Single view</b> to go back to one video.</td></tr>
+<tr><th>Sync A &amp; B</th><td>When on, Play, Frame and the slider control both videos. Turn it off to move one video on its own.</td></tr>
+</table>
+
+<h2>Filming tips</h2>
+<ul>
+<li>Put the phone on a tripod or a stable surface so the picture doesn’t shake.</li><li>Film from the same spot and angle each time, so clips are easy to compare.</li><li>Film side-on for pitching and hitting mechanics, and keep the whole body in the frame.</li><li>Use 60 fps or higher if your phone allows it. Slow-motion modes are even better for fast swings and throws.</li><li>Good light and a plain background make the body easier to see.</li>
+</ul>
+
+<h2>Questions</h2>
+<details><summary>Are my videos uploaded anywhere?</summary><p>No. Videos are opened and processed on your device in the browser. Form Note doesn’t send them to a server.</p></details><details><summary>What does the saved image include?</summary><p>The frame or frames you were viewing, with your drawings and angles. The app’s name and link are added in a bar at the bottom.</p></details><details><summary>The video takes a long time to load.</summary><p>Large files, such as long 4K clips, can take a while to open. Try filming at 1080p, or trim the clip to the part you need.</p></details><details><summary>Frame doesn’t move one frame at a time.</summary><p>Check the fps setting. It should match the frame rate you filmed at. If it’s set higher than the video’s real rate, each tap moves less than one frame.</p></details><details><summary>My phone always opens the same folder when I choose a video.</summary><p>The file picker is controlled by your phone, not by the app. Try the <b>Recent</b> or <b>Videos</b> view in the picker to find your clips without browsing folders.</p></details><details><summary>Do the drawings stay on the video?</summary><p>They stay while the page is open. If you reload the page or choose a new video, they’re cleared. Use <b>Save still</b> to keep an image.</p></details>
+
+<div class="note"><b>A note for coaches and parents.</b> Use the numbers to compare a player with their own earlier clips, not with other players. Follow your league’s guidelines on pitch counts and rest.</div>
+
+<p><a href="./">Back to the app</a></p>
+<footer>Form Note is a free tool. Sample images are illustrations.</footer>
+</main>
+</body>
+</html>
