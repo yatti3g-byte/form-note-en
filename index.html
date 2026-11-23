@@ -115,6 +115,8 @@ details.draw:not([open]) .g-tools,details.draw:not([open]) .g-edit{display:none}
 #tutbn span{flex:1}.nb{white-space:normal}#tutbn button{min-height:44px;border-radius:8px;border:1px solid #fff;background:transparent;color:#fff;font:inherit;padding:0 12px;cursor:pointer}
 #tutbn[hidden],#tutmask[hidden],#tutcard[hidden]{display:none!important}
 #tutbn button.go{background:#fff;color:#0f6b4b;font-weight:700}
+.g-sup{text-align:center}.g-sup[hidden]{display:none}.g-sup .lnk{display:inline-block;min-height:44px}
+@media (orientation:landscape) and (max-height:560px){.g-sup{display:none}}
 </style>
 </head>
 <body>
@@ -165,6 +167,7 @@ details.draw:not([open]) .g-tools,details.draw:not([open]) .g-edit{display:none}
       <span class="hintline" id="toolhint">Drag to draw a line</span>
     </div>
   </details>
+  <div class="g-sup" hidden><a class="lnk" id="supportlink" href="#" target="_blank" rel="noopener">☕ Support this free tool</a></div>
 </div>
 
 <div id="tutmask" hidden></div><div id="tutcard" hidden role="dialog" aria-live="polite"></div>
@@ -752,6 +755,9 @@ setActive(0);
 fixPlayW();addEventListener('resize',fixPlayW);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fixPlayW);
 
 
+
+const SUPPORT_URL='https://buymeacoffee.com/formnote';
+if(SUPPORT_URL){$('#supportlink').href=SUPPORT_URL;document.querySelector('.g-sup').hidden=false}
 const TUTS={basic:[
  {t:'Choose video',m:'Choose a swing or pitching video from your phone. The video is only viewed on your phone and is never sent anywhere.',sel:()=>'.pane .bar label',done:()=>panes[0].v.videoWidth>0,need:true,hint:'Choose a video to go to the next step'},
  {t:'Stop at the moment you want reviewed',m:'Move frame by frame with ◀ ▶ and stop at the moment you want reviewed (for example, the moment of contact). You can also use the slider to move roughly.',sel:()=>['.g-play','.g-seek']},
