@@ -24,7 +24,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 "Hiragino Sans
 .panes{display:grid;grid-template-columns:1fr;gap:6px;flex:1;min-height:0}
 .panes.two{grid-template-columns:1fr 1fr}
 .panes.two.rows{grid-template-columns:1fr;grid-template-rows:1fr 1fr}
-.panes{min-height:min-content}.panes.two.rows{min-height:420px}
+.panes{min-height:250px}.panes.two.rows{min-height:420px}
 .pane{display:flex;flex-direction:column;gap:4px;min-height:0;min-width:0}
 [hidden]{display:none!important}
 .bar{display:flex;align-items:center;gap:8px}
@@ -95,7 +95,8 @@ details.draw:not([open]) .g-tools,details.draw:not([open]) .g-edit{display:none}
 #rel{grid-area:rel;font-size:12px}
 @media (orientation:landscape) and (max-height:560px){
   .stage{min-height:110px}.panes{min-height:160px}.panes.two.rows{min-height:320px}
-  .ctl{max-width:none;display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"play seek" "set rel" "pair act" "tut tut" "draw draw";align-items:start}
+  .ctl{max-width:none;display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"play seek" "set rel" "pair act" "tut draw";align-items:start}
+  .g-tut{justify-content:flex-start}.g-tut .tl{display:none}.g-pair{grid-template-columns:1.5fr 1fr 1fr}.g-pair .chk{grid-column:auto}.g-tut .lnk{min-height:36px}details.draw summary{padding:6px 4px}
 }
 
 .g-tut{grid-area:tut;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:0 4px;font-size:14px;color:var(--mute)}
@@ -135,7 +136,7 @@ details.draw:not([open]) .g-tools,details.draw:not([open]) .g-edit{display:none}
     <select id="speed" aria-label="Playback speed">
       <option value="0.1">0.1x</option><option value="0.25" selected>0.25x</option><option value="0.5">0.5x</option><option value="1">1x</option>
     </select>
-    <select id="fps" aria-label="Video frame rate">
+    <select id="fps" aria-label="Frame rate you filmed at (fps)">
       <option value="24">24fps</option><option value="30" selected>30fps</option><option value="60">60fps</option><option value="120">120fps</option><option value="240">240fps</option>
     </select>
     <button class="btn" id="cmp">Compare</button>
@@ -168,12 +169,12 @@ details.draw:not([open]) .g-tools,details.draw:not([open]) .g-edit{display:none}
 
 <div id="tutmask" hidden></div><div id="tutcard" hidden role="dialog" aria-live="polite"></div>
 <div id="snapbox" hidden>
-  <div class="seg"><button class="btn on" id="m1">This moment</button><button class="btn" id="m4">4 around it</button><label id="ivw" hidden>Interval <select id="burstiv"><option value="1">1 frame</option><option value="2">2 frames</option><option value="3">3 frames</option><option value="5" selected>5 frames</option><option value="10">10 frames</option><option value="15">15 frames</option><option value="30">30 frames</option></select></label></div>
+  <div class="seg"><button class="btn on" id="m1">This moment</button><button class="btn" id="m4">4 frames</button><label id="ivw" hidden>Interval <select id="burstiv"><option value="1">1 frame</option><option value="2">2 frames</option><option value="3">3 frames</option><option value="5" selected>5 frames</option><option value="10">10 frames</option><option value="15">15 frames</option><option value="30">30 frames</option></select></label></div>
   <img id="snapimg" alt="Still image">
   <p class="hint" id="snaphint">Press and hold the image to save it.</p>
   <div class="row" style="justify-content:center"><button class="btn on" id="snapshare" hidden>Share</button><button class="btn" id="snapclose">Close</button></div>
   <div id="aipanel" hidden>
-    <div class="row" style="justify-content:center"><select id="aikind"><option>Batting (swing)</option><option>Pitching (throw)</option></select><input id="aictx" type="text" maxlength="80" placeholder="Age, batting side, concern"></div>
+    <div class="row" style="justify-content:center"><select id="aikind"><option>Batting</option><option>Pitching</option></select><input id="aictx" type="text" maxlength="80" placeholder="Age, bats/throws, what to work on"></div>
     <select id="aipair" hidden><option value="">A & B: not specified</option><option value="self">Both are me (different days or form)</option><option value="AM">A is me, B is the model</option><option value="MA">A is the model, B is me</option></select>
     <textarea id="aitext" rows="6" aria-label="Question for AI"></textarea>
     <button class="btn on" id="aisend">Copy the question and send to an AI app</button>
@@ -289,7 +290,7 @@ const panes=[0,1].map(i=>{
 });
 
 const fps=()=>+$('#fps').value;
-const T=()=>(compare&&$('#link').checked?panes:[panes[active]]).filter(p=>p.v.getAttribute('src'));
+const T=()=>(compare&&$('#link').checked?panes:[panes[active]]).filter(p=>p.v.getAttribute('src')&&p.v.videoWidth>0);
 
 const PLAYTXT=['Play','Pause'];
 function fixPlayW(){const b=$('#play'),keep=b.textContent;b.style.minWidth='';let w=0;PLAYTXT.forEach(t=>{b.textContent=t;w=Math.max(w,b.getBoundingClientRect().width)});b.textContent=keep;b.style.minWidth=Math.ceil(w)+'px';b.style.justifyContent='center'}
@@ -336,7 +337,9 @@ function settled(ps,cb){
   let left=ps.length;if(!left)return;
   ps.forEach(p=>{
     let done=false;const fin=ok=>{if(done)return;done=true;if(ok===false)p.stale=false;if(--left===0)cb()};
-    if(p.stale&&!p.mid&&p.v.requestVideoFrameCallback){p.wait.push(()=>fin());setTimeout(()=>fin(false),150)}else fin();
+    if(p.stale&&!p.mid&&p.v.requestVideoFrameCallback){p.wait.push(()=>fin());setTimeout(()=>fin(false),150)}
+    else if(p.stale&&!p.v.requestVideoFrameCallback){requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(()=>fin(),60)))}
+    else fin();
   });
 }
 
@@ -518,6 +521,7 @@ function buildSheet(sheet){
 let bursting=false;
 const seekWait=ps=>Promise.all(ps.map(p=>new Promise(r=>{const v=p.v;let d=false;const f=()=>{if(d)return;d=true;v.removeEventListener('seeked',f);r()};v.addEventListener('seeked',f);setTimeout(f,1500)})));
 const settleP=ps=>new Promise(r=>settled(ps,r));
+const SETTLE_MS=('requestVideoFrameCallback' in HTMLVideoElement.prototype)?60:200;  
 async function buildFour(clean){
   if(bursting)return;
   const ts=T().filter(p=>p.v.videoWidth);if(!ts.length)return;
@@ -525,6 +529,7 @@ async function buildFour(clean){
   aiPair=ts.length>1;
   bursting=true;ctl.forEach(e=>e.disabled=true);btn.textContent='Creating…';
   ts.forEach(p=>p.v.pause());
+  let at=0;
   try{
     await settleP(ts);
     const cs=framesOf(ts,f),lo=-Math.min(...cs.map(c=>c.n)),hi=Math.min(...cs.map(c=>c.last-c.n));
@@ -533,9 +538,9 @@ async function buildFour(clean){
     let nb=Math.min(2,mb),na=Math.min(ma,3-nb);nb=Math.min(mb,3-na);
     let ds=[];for(let k=-nb;k<=na;k++)ds.push(k*iv);
     if(ds.length<2){btn.dataset.keep='1';btn.textContent='Too close to the end of the video';setTimeout(()=>{delete btn.dataset.keep;btn.textContent=lab},1800);return}
-    const items=[];let at=0;
+    const items=[];at=0;
     for(const d of ds){
-      if(d!==at){goFrames(ts,f,d-at);at=d;await seekWait(ts);await settleP(ts);await new Promise(r=>setTimeout(r,60))}
+      if(d!==at){goFrames(ts,f,d-at);at=d;await seekWait(ts);await settleP(ts);await new Promise(r=>setTimeout(r,SETTLE_MS))}
       const fr=ts.map(p=>frame(p,!clean)).filter(Boolean);if(!fr.length)continue;
       const h=Math.min(...fr.map(c=>c.height)),ws=fr.map(c=>c.width*h/c.height);
       const o=document.createElement('canvas');o.width=Math.round(ws.reduce((a,c)=>a+c));o.height=h;
@@ -543,9 +548,11 @@ async function buildFour(clean){
       let tags=null;if(fr.length>1){let ac=0;const tw=ws.reduce((a,c)=>a+c);tags=fr.map((c,k)=>{ac+=ws[k];return{x:ac/tw,l:String.fromCharCode(65+k)}})}
       items.push({c:shrink(o,1600),cap:(d===0?'● ':'')+capText(),tags});
     }
-    if(at!==0){goFrames(ts,f,-at);await seekWait(ts);await settleP(ts)}
+    if(at!==0){goFrames(ts,f,-at);at=0;await seekWait(ts);await settleP(ts)}
     const cc=withCredit(buildSheet(items));view[clean?5:4]={cc,items,url:cc.toDataURL('image/png')};
-  }finally{bursting=false;ctl.forEach(e=>e.disabled=false);if(!btn.dataset.keep)btn.textContent=lab}
+  }finally{
+    if(at!==0){try{goFrames(ts,f,-at);at=0}catch(e){}}  
+    bursting=false;ctl.forEach(e=>e.disabled=false);if(!btn.dataset.keep)btn.textContent=lab}
 }
 
 
@@ -556,13 +563,13 @@ function aiPrompt(){
     ?'- The image shows 4 moments in order, numbered 1 to 4. A larger number is later in time.\n- In each moment, the left half is A and the right half is B, each with a yellow “A” or “B” mark at the top right. Refer to them as “1-A”, “1-B” and so on.\n- The same number means the same moment for A and B (both videos were moved by the same number of frames; if the sync point is used, positions from the sync point line up). The text at the bottom left is the number of frames from the sync point (or the video time).'
     :'- The image shows 4 consecutive moments of the same video in order, numbered 1 to 4. A larger number is later in time.\n- The text at the bottom left of each moment is the video time. Refer to moments by number, such as “moment 2” or “moments 3 to 4”.\n- The moment marked with ● is the one I stopped on and chose.';
   const cmp=aiPair
-    ?'1. Comparison: for each number (1, 2, 3, 4), compare A and B. For each number write what differs and which looks better or worse (for example “difference between 1-A and 1-B”). At the end, summarize what changed from A to B, and what improved or got worse overall. Do not look at only one side.'
+    ?'1. Comparison: for each number (1, 2, 3, 4), compare A and B. For each number write what differs (for example “difference between 1-A and 1-B”) and what that might mean for the swing or pitch. At the end, summarize what changed from A to B and what seems to have improved or slipped overall. Do not look at only one side.'
     :'1. Change: describe in order how the timing and posture change across moments 1, 2, 3 and 4.';
   const pts=bat
     ?'start of the motion and weight shift onto the back leg, timing of the front foot landing, position of the load (stance and hand position), front shoulder and body opening, elbow and hand position, hip rotation, head position, arm extension near contact'
-    :'timing of the back leg and stride foot, glove-side pull-in and opening, elbow and shoulder position, trunk tilt and body opening, release point, head stability, weight shift';
+    :'timing of the back leg and stride foot, glove-side action (tuck and pull-off), elbow and shoulder position, trunk tilt and body opening, release point, head stability, weight shift';
   const hint=bat&&/late|jam|behind|timing/i.test(ctx)?'\n- The concern relates to timing, so pay special attention to the start of the motion, weight shift onto the back leg, front foot landing and the timing of the start of the swing.':'';
-  return 'Please review the baseball form in the images ('+kind+').\n\n[Background]\n'+ctx+'\n'+(aiPair?rel+'\n':'')+'\n[How to read the image]\n'+look+'\n\n[Points to look at (candidates)]\n'+pts+'\n- These are only candidates. Judge only from what is actually visible in the images, and prioritize what seems related to my concern.'+hint+'\n- If something is hidden, too small or cannot be judged from the angle, write “cannot tell” instead of guessing.\n\n[Request]\n0. First, write one line per moment on what you can see (body direction, foot position, positions of the arms, hands and '+(bat?'bat':'ball and glove')+').\n'+cmp+'\n2. Good points (2 to 3)\n3. Points of concern (2 to 3). For each, give the evidence: which moment and which body part (number and body part).\n4. Improvement drills (3 that can be done at home or on the field, with how to do them, a rough number of reps and cautions)\n5. Advice for the next time I film (camera position, angle and timing)\n\n[Please keep in mind]\n- This is judged from still images only, so do not be definitive; use phrases such as “as far as I can see” and “it may be that…”\n- If an age or school grade is given in [Background], advise according to that age group’s growth stage and physical ability, and put injury prevention first (if none is given, do not assume an age). Do not impose professional standards\n- If I have pain or discomfort, tell me not to push through it and to consult a doctor or a coach\n- Give a short explanation for technical terms';
+  return 'Please review the player’s baseball mechanics based on the images ('+kind+').\n\n[Background]\n'+ctx+'\n'+(aiPair?rel+'\n':'')+'\n[How to read the image]\n'+look+'\n\n[Points to look at (candidates)]\n'+pts+'\n- These are only candidates. Judge only from what is actually visible in the images, and prioritize what seems related to my concern.'+hint+'\n- If something is hidden, too small or cannot be judged from the angle, write “cannot tell” instead of guessing.\n\n[Request]\n0. First, write one line per moment on what you can see (body direction, foot position, positions of the arms, hands and '+(bat?'bat':'ball and glove')+').\n'+cmp+'\n2. Good points (2 to 3)\n3. Points of concern (2 to 3). For each, give the evidence: which moment and which body part (number and body part).\n4. Improvement drills (3 that can be done at home or on the field, with how to do them, a rough number of reps and cautions)\n5. Advice for the next time I film (camera position, angle and timing)\n\n[Please keep in mind]\n- This is judged from still images only, so do not be definitive; use phrases such as “as far as I can see” and “it may be that…”\n- If an age or school grade is given in [Background], advise according to that age group’s growth stage and physical ability, and put injury prevention first (if none is given, do not assume an age). Do not impose professional standards\n- If I have pain or discomfort, tell me not to push through it and to consult a doctor or a coach\n- Give a short explanation for technical terms';
 }
 let aiEdited=false;
 function aiFill(){
