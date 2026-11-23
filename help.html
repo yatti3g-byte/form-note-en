@@ -9,7 +9,9 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a16;--panel:#18251f;--line:#2b3d35;--ink:#e6efe9;--mute:#9db0a5;--acc:#ffd23f;--accInk:#14201c;color-scheme:dark}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}
+main{word-break:auto-phrase;line-break:strict;text-wrap:pretty}
 main{max-width:760px;margin:0 auto;padding:20px 16px 64px}
+h1,.card h3{word-break:keep-all;overflow-wrap:anywhere}
 h1{font-size:2rem;line-height:1.25;margin:8px 0 8px;letter-spacing:-.01em}
 h2{font-size:1.35rem;line-height:1.3;margin:2.4rem 0 .6rem}
 h3{font-size:1.05rem;margin:1.4rem 0 .2rem}
@@ -36,41 +38,63 @@ details p{margin:.2rem 0 .5rem;color:var(--mute)}
 .note{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem;margin:1.2rem 0}
 ul{padding-left:1.2rem}
 li{margin:.25rem 0}
+.feat{display:grid;gap:12px;grid-template-columns:1fr;margin:1rem 0}
+@media (min-width:720px){.feat{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem}
+.card .no{display:inline-grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--acc);color:var(--accInk);font-weight:700;font-size:.95rem}
+.card h3{margin:.5rem 0 .3rem;font-size:1.08rem;line-height:1.4}
+.card p{margin:0;color:var(--mute);font-size:.97rem;line-height:1.65}
+.chips{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:.8rem 0 0}
+.chips li{margin:0;padding:.3rem .8rem;border:1px solid var(--line);border-radius:999px;font-size:.92rem;background:var(--panel)}
+.nb{white-space:nowrap}
+.sub{color:var(--mute);margin:-.2rem 0 .6rem}
 footer{margin-top:2.4rem;color:var(--mute);font-size:.92rem}
 </style>
 </head>
 <body>
 <main>
-<h1>How to use Form Note</h1>
-<p class="lead">Review baseball mechanics with video. Step through a clip frame by frame, draw lines, measure angles, and compare two clips side by side. Your videos stay on your device.</p>
+<h1>Compare two videos at the moment of contact</h1>
+<p class="lead">Form Note is a free tool for reviewing baseball mechanics on video. Line up two clips on the same moment, such as yourself and a model, or last week and this week, and <span class="nb">step through them frame by frame.</span> Videos are processed only on your device.</p>
 <a class="btn" href="./">Open the app</a>
 
-<img class="shot" src="screenshot.jpg" width="1236" height="2430" alt="Form Note comparing two pitching clips side by side, with the elbow angle measured on each clip (110 degrees and 87 degrees), and the drawing and frame controls below.">
-<p class="cap">Sample clips are illustrations, not real players.</p>
-
-<h2>Quick start</h2>
+<img class="shot" src="screenshot.jpg" width="1236" height="2745" alt="Form Note showing two pitching clips side by side, with the elbow angle measured on each (110 and 89 degrees), three frames after the sync point and showing “Sync +3 frames”.">
+<p class="cap">Two clips lined up on the same sync point and stepped forward 3 frames. Sample clips are illustrations, not real players.</p>
+<h2>What Form Note is good at</h2>
+<div class="feat"><div class="card"><span class="no">1</span><h3>Line up both clips <wbr>at the key moment</h3><p>Pause A and B on the moment of contact or release and tap “Sync at this moment”. That moment becomes zero, and you can step before and after it in both clips together. Even if the clips start at different times, you compare the same moment.</p></div><div class="card"><span class="no">2</span><h3>One tap, <wbr>exactly one frame</h3><p>Built so that one tap moves exactly one frame in 30, 120 or 240 fps clips. Fast swings and pitches can be followed without skipping. Drawings are fixed to the screen, so you can check body movement against a reference line.</p></div><div class="card"><span class="no">3</span><h3>Share or ask AI <wbr>about the result</h3><p>Tap “Ask AI” to get 4 images around the moment and a ready-made question (good points, concerns, drills) to send to the AI app you prefer. “Save / Share” sends images to chat apps.</p></div></div>
+<ul class="chips"><li>Videos never leave your device</li><li>No sign-up, no fees</li><li>Just open it in a browser</li></ul>
+<h2>Compare two videos (the best way to use it)</h2>
+<p class="sub">If this is your first time, these 4 steps are all you need.</p>
 <ol class="steps">
-<li><h3>Choose a video</h3><p>Tap <b>Choose video</b> and pick a clip from your phone. To compare two clips, tap <b>Compare two videos</b> first, then choose a second video for B. Both landscape and portrait videos are supported automatically. You can pick several videos at once; with two or more, use <b>◀ ▶</b> next to the name to switch between them quickly (drawings are cleared when you switch).</p></li>
-<li><h3>Find the moment</h3><p>Tap <b>Frame ▶</b> or <b>◀ Frame</b> to move one frame at a time. Drag the slider to jump around, or tap <b>Play</b> and set the speed from 0.1x to 1x. With <b>Sync A &amp; B</b> on, both videos move together.</p><img class="gif" src="frame-step.gif" width="412" height="810" alt="Each tap on Frame ▶ moves both videos forward by one frame, and the time display changes."><p class="gifcap">Each tap on <b>Frame ▶</b> moves one frame. The players are illustrations.</p></li>
-<li><h3>Draw and measure</h3><p>Pick a tool, then draw on the video. Your drawings stay on screen as you move through frames, so you can check whether a position changes.</p></li>
-<li><h3>Save a still image</h3><p>Tap <b>Save image</b> to get a still image with your annotations. The app’s name, link and a QR code are added at the bottom, so anyone you share it with can open the app. On phones that support it, tap <b>Share</b> to send the image straight to a chat app; the app’s link is sent as text too, though whether it appears depends on the chat app. You can also press and hold the image to save it, or take a screenshot.</p></li>
+<li><h3>Choose two videos</h3><p>Tap <b>Compare</b>, then use <b>Choose video</b> for A and for B. If you pick several videos at once, you can swap them quickly with ◀ ▶.</p></li>
+<li><h3>Stop each one at the moment to compare</h3><p>Use <b>Frame ▶</b>, <b>◀ Frame</b> or the slider to set A on the moment of contact or release. Then tap the B screen to select it and set B on the same moment.</p></li>
+<li><h3>Tap “Sync at this moment”</h3><p>With both on their moments, tap <b>Sync at this moment</b>. That moment becomes zero. From now on, <b>Frame ▶</b> and Play move both videos together. The screen shows the frames from the sync point.</p></li>
+<li><h3>Save, share or ask AI</h3><p>Tap <b>Ask AI</b> to get one image of the moments around the sync point, ready to send to an AI app with a question. To show someone, use <b>Save / Share</b>, which includes your drawings.</p></li>
+</ol>
+
+<h2>Basic use (one video)</h2>
+<ol class="steps">
+<li><h3>Choose a video</h3><p>Tap <b>Choose video</b> and pick a clip from your phone. To compare two clips, tap <b>Compare</b> first, then choose a second video for B. Both landscape and portrait videos are shown automatically. You can pick several videos at once; with two or more, use <b>◀ ▶</b> next to the name to switch between them quickly (drawings are cleared when you switch).</p></li>
+<li><h3>Find the moment</h3><p>Tap <b>Frame ▶</b> or <b>◀ Frame</b> to move one frame at a time. Drag the slider to jump around, or tap <b>Play</b> and set the speed from 0.1x to 1x. With <b>Sync A &amp; B</b> on, both videos move together.</p><img class="gif" src="frame-step.gif" width="330" height="504" alt="Each tap on Frame ▶ moves both videos forward by one frame, and the time display changes."><p class="gifcap">Each tap on <b>Frame ▶</b> moves one frame. The players are illustrations.</p></li>
+<li><h3>Draw and measure</h3><p>Open <b>Drawing tools</b> at the bottom of the screen, pick a tool, then draw on the video. Your drawings stay on screen as you move through frames, so you can check whether a position changes.</p></li>
+<li><h3>Save and share</h3><p>Tap <b>Save / Share</b> to get an image with your drawings. Use <b>This moment</b> and <b>4 around it</b> at the top to switch between one image and a set of four. The app’s name, link and a QR code are added at the bottom, so anyone you share it with can open the app. On phones that support it, tap <b>Share</b> to send the image straight to a chat app; the link is sent as text too, though whether it appears depends on the chat app. You can also press and hold the image to save it, or take a screenshot.</p></li>
+<li><h3>Ask AI about 4 key moments</h3><p>Tap <b>Ask AI</b> on the main screen. The app collects 4 images around the moment you are viewing, at the interval (in frames) you choose, and puts them in one image (for example, with an interval of 5 frames: −10, −5, 0 and +5; 0 is the moment you are viewing, marked with ●; near the end of a video, the missing ones are taken from the other side). With two videos, the 4 images have A and B lined up on the same moments. A question for the AI (good points, concerns, drills) is prepared on the same screen. Enter your age and concern, choose the relationship between A and B if you have two videos (both me / A is me and B is the model, etc.), then tap “Copy the question and send to an AI app” and send the image and question in an app such as Claude or ChatGPT. You can edit the question freely. It asks the AI to compare A and B number by number, lists points to look at, and tells it to write “cannot tell” for what it cannot see. The image is sent only to the app you choose. The AI’s comments are a guide; if you have pain, see a doctor or coach.</p></li>
 </ol>
 
 <h2>Drawing tools</h2>
 <table>
 <tr><th>Line</th><td>Drag from one point to another. Good for checking a straight edge, such as a vertical line through the head.</td></tr>
-<tr><th>Angle (tap 3 points)</th><td>Tap three points in order. The angle is measured at the middle point and shown on the video. For an elbow, tap shoulder, elbow, then wrist.</td></tr>
+<tr><th>Angle</th><td>Tap three points in order (the screen says “Tap 3 points: end, vertex, end”). The angle is measured at the middle point and shown on the video. For an elbow, tap shoulder, elbow, then wrist.</td></tr>
 <tr><th>Freehand</th><td>Drag to draw any shape.</td></tr>
-<tr><th>Color</th><td>Change the color of the next line you draw.</td></tr>
+<tr><th>Color (yellow square)</th><td>Change the color of the next line you draw.</td></tr>
 <tr><th>Undo</th><td>Removes the last point or drawing on the selected video.</td></tr>
-<tr><th>Clear drawings</th><td>Removes all drawings on the selected video.</td></tr>
+<tr><th>Clear all</th><td>Removes all drawings on the selected video.</td></tr>
 </table>
 
 <h2>Playback settings</h2>
 <table>
 <tr><th>Speed</th><td>0.1x, 0.25x, 0.5x or 1x. Slower speeds make fast motion easier to see.</td></tr>
 <tr><th>fps</th><td>Set this to the frame rate you filmed at (for example 30, 60 or 240). It decides how far <b>Frame</b> moves, so one tap should equal one frame of your video.</td></tr>
-<tr><th>Compare two videos</th><td>Shows videos A and B together. Tap <b>Single view</b> to go back to one video.</td></tr>
+<tr><th>Compare</th><td>Shows videos A and B together. Tap <b>Back to one video</b> to return to one video.</td></tr>
 <tr><th>Sync at this moment</th><td>Pause video A and video B on the moment you most want to compare (impact, release…), then tap <b>Sync at this moment</b>. That moment becomes zero, and both videos step together, frame by frame, before and after it. The screen shows how many frames and seconds you are from the sync point. <b>Back to sync point</b> returns both videos to it. If either video reaches its first or last frame, both stop so the gap never changes. Choosing another video clears the sync point.</td></tr>
 <tr><th>Sync A &amp; B</th><td>When on, Play, Frame and the slider control both videos. Turn it off to move one video on its own. If the videos start at different moments, turn it off, set each video to the scene you want to compare, then turn it back on: they will keep moving with the same gap between them.</td></tr>
 </table>
@@ -81,7 +105,7 @@ footer{margin-top:2.4rem;color:var(--mute);font-size:.92rem}
 </ul>
 
 <h2>Questions</h2>
-<details><summary>Are my videos uploaded anywhere?</summary><p>No. Videos are opened and processed on your device in the browser. Form Note doesn’t send them to a server.</p></details><details><summary>Can someone open the app from the saved image?</summary><p>Yes. Open the saved image on the same phone and long-press the QR code (in Google Photos or Google Lens, tap the link it detects), or scan it from another phone’s camera. The link written next to the QR code is part of the picture, so it can’t be tapped. The QR code works in a saved image or a screenshot, as long as the image is still large enough to read. If you use <b>Share</b>, the link is also sent as text, and many chat apps make it tappable.</p></details><details><summary>I don’t see the Share button.</summary><p>The Share button appears only in browsers that can share images. If you don’t see it, press and hold the image to save it, or take a screenshot, and send that.</p></details><details><summary>What does the saved image include?</summary><p>The frame or frames you were viewing, with your drawings and angles. A bar at the bottom shows the app’s name, its link and a QR code.</p></details><details><summary>The video takes a long time to load.</summary><p>Large files, such as long 4K clips, can take a while to open. Try filming at 1080p, or trim the clip to the part you need.</p></details><details><summary>The video won’t play.</summary><p>Some phone videos use a format that not every device can play, especially HEVC (H.265) clips from iPhones. On iPhone, set <b>Settings → Camera → Formats → Most Compatible</b> and film again, or convert the clip to H.264 MP4. Then choose it again.</p></details><details><summary>Do my drawings follow the video?</summary><p>No. Drawings are fixed to the picture area, not to each frame. They stay in the same place as you step through the video, so you can compare how the body moves against a fixed line. Each pane keeps its own drawings, and choosing another video clears them.</p></details><details><summary>Frame doesn’t move one frame at a time.</summary><p>Check the fps setting. It should match the frame rate you filmed at. If it’s set higher than the video’s real rate, each tap moves less than one frame.</p></details><details><summary>My phone always opens the same folder when I choose a video.</summary><p>The file picker is controlled by your phone, not by the app. Try the <b>Recent</b> or <b>Videos</b> view in the picker to find your clips without browsing folders.</p></details><details><summary>Do the drawings stay on the video?</summary><p>They stay while the page is open. If you reload the page or choose a new video, they’re cleared. Use <b>Save image</b> to keep a copy.</p></details>
+<details><summary>I’m new. How do I use it?</summary><p>Under “First time?” at the bottom of the app there are two guides. “Ask AI: 1 video” goes from choosing a video to sending it to an AI app. “Ask AI: compare 2” puts two videos side by side, lines up the sync point, and then goes on to sending it to an AI app. Both point at the screen as they go. A notice about the guide also appears the first time you open the app.</p></details><details><summary>Are my videos uploaded anywhere?</summary><p>No. Videos are opened and processed on your device in the browser. Form Note doesn’t send them to a server.</p></details><details><summary>Can someone open the app from the saved image?</summary><p>Yes. Open the saved image on the same phone and long-press the QR code (in Google Photos or Google Lens, tap the link it detects), or scan it from another phone’s camera. The link written next to the QR code is part of the picture, so it can’t be tapped. The QR code works in a saved image or a screenshot, as long as the image is still large enough to read. If you use <b>Share</b>, the link is also sent as text, and many chat apps make it tappable.</p></details><details><summary>I don’t see the Share button.</summary><p>The Share button appears only in browsers that can share images. If you don’t see it, press and hold the image to save it, or take a screenshot, and send that.</p></details><details><summary>What does the saved image include?</summary><p>The image from <b>Save / Share</b> is the frame you were viewing, with your drawings and angles on top. The image from <b>Ask AI</b> has no drawings. A bar at the bottom shows the app’s name, its link and a QR code.</p></details><details><summary>The video takes a long time to load.</summary><p>Large files, such as long 4K clips, can take a while to open. Try filming at 1080p, or trim the clip to the part you need.</p></details><details><summary>The video won’t play.</summary><p>Some phone videos use a format that not every device can play, especially HEVC (H.265) clips from iPhones. On iPhone, set <b>Settings → Camera → Formats → Most Compatible</b> and film again, or convert the clip to H.264 MP4. Then choose it again.</p></details><details><summary>Do my drawings follow the video?</summary><p>No. Drawings are fixed to the picture area, not to each frame. They stay in the same place as you step through the video, so you can compare how the body moves against a fixed line. Each pane keeps its own drawings, and choosing another video clears them.</p></details><details><summary>Frame doesn’t move one frame at a time.</summary><p>Check the fps setting. It should match the frame rate you filmed at. If it’s set higher than the video’s real rate, each tap moves less than one frame.</p></details><details><summary>My phone always opens the same folder when I choose a video.</summary><p>The file picker is controlled by your phone, not by the app. Try the <b>Recent</b> or <b>Videos</b> view in the picker to find your clips without browsing folders.</p></details><details><summary>Do the drawings stay on the video?</summary><p>They stay while the page is open. If you reload the page or choose a new video, they’re cleared. Use <b>Save / Share</b> to keep a copy.</p></details>
 
 <div class="note"><b>A note for coaches and parents.</b> Use the numbers to compare a player with their own earlier clips, not with other players. Follow your league’s guidelines on pitch counts and rest.</div>
 
