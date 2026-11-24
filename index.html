@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Form Note</title>
+<title>FormNote</title>
 <meta name="description" content="A free tool to review baseball mechanics on video: frame by frame, angle measuring and two-video comparison. Videos stay on your device.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Form Note">
+<meta property="og:title" content="FormNote">
 <meta property="og:description" content="A free tool to review baseball mechanics on video: frame by frame, angle measuring and two-video comparison. Videos stay on your device.">
 <meta property="og:url" content="https://yatti3g-byte.github.io/form-note-en/">
 <meta property="og:image" content="https://yatti3g-byte.github.io/form-note-en/og.jpg">
@@ -120,7 +120,7 @@ details.draw:not([open]) .g-tools,details.draw:not([open]) .g-edit{display:none}
 </style>
 </head>
 <body>
-<div id="tutbn" hidden><span><span class="nb">First time? </span><span class="nb">We will walk you through </span><span class="nb">asking AI.</span></span><button class="go" id="tutgo">Show me</button><button id="tutno" aria-label="Close">×</button></div>
+<div id="tutbn" hidden><span><span class="nb">First time? </span><span class="nb">We will walk you through comparing two videos and </span><span class="nb">asking AI.</span></span><button class="go" id="tutgo">Show me</button><button id="tutno" aria-label="Close">×</button></div>
 <div class="panes" id="panes"></div>
 
 <div class="ctl">
@@ -152,7 +152,7 @@ details.draw:not([open]) .g-tools,details.draw:not([open]) .g-edit{display:none}
     <button class="btn" id="snap">Save / Share</button>
     <a class="lnk" href="help.html" target="_blank" rel="noopener">How to use</a>
   </div>
-  <div class="g-tut"><span class="tl">First time? </span><button class="lnk" id="tutbtn">Ask AI: 1 video</button><button class="lnk" id="tutbtn2">Ask AI: compare 2</button></div>
+  <div class="g-tut"><span class="tl">First time? </span><button class="lnk" id="tutbtn2">Ask AI: compare 2</button><button class="lnk" id="tutbtn">Ask AI: 1 video</button></div>
   <details class="draw" id="draw">
     <summary>Drawing tools (line / angle)</summary>
     <div class="g-tools" id="tools">
@@ -232,7 +232,7 @@ function nrm(p,e){
 const panes=[0,1].map(i=>{
   const el=document.createElement('section');el.className='pane';
   el.innerHTML='<div class="bar"><b>'+'AB'[i]+'</b><label class="btn" aria-label="Choose video"><span class="lf">Choose video</span><span class="ls">Choose</span><input type="file" accept="video/*" multiple hidden></label><span class="name">No video selected</span><span class="nav" hidden><button type="button" class="btn" data-d="-1" aria-label="Previous video">◀</button><span class="cnt"></span><button type="button" class="btn" data-d="1" aria-label="Next video">▶</button></span></div>'+
-  '<div class="stage"><video playsinline muted preload="metadata"></video><canvas></canvas><p class="empty">Tap “Choose video”<br>to open a video from your phone</p></div>';
+  '<div class="stage"><video playsinline muted preload="metadata"></video><canvas></canvas><p class="empty">Tap “Choose video”<br>to open a video from your phone'+(i===0?'<br>Select two videos at once to compare them side by side':'')+'</p></div>';
   $('#panes').append(el);
   const p={i,el,v:el.querySelector('video'),c:el.querySelector('canvas'),shapes:[],cur:null,pend:null,list:[],pos:0};
   p.x=p.c.getContext('2d');
@@ -248,7 +248,13 @@ const panes=[0,1].map(i=>{
     el.querySelector('.empty').hidden=true;
     p.shapes=[];p.pend=null;p.cur=null;p.anchor=null;setActive(i);navUI();ancUI();
   };
-  el.querySelector('input').onchange=e=>{const fs=[...e.target.files];if(!fs.length)return;p.list=fs;open(0);e.target.value=''};
+  p.open=open;
+  el.querySelector('input').onchange=e=>{const fs=[...e.target.files];e.target.value='';if(!fs.length)return;
+    
+    if(fs.length>=2&&(!compare||!panes.some(q=>q.v.getAttribute('src')))){
+      if(!compare)setCompare(true);
+      panes.forEach(q=>q.list=fs);panes[0].open(0);panes[1].open(1);setActive(0);return}
+    p.list=fs;open(0)};
   el.querySelectorAll('.nav button').forEach(bt=>bt.onclick=()=>open(p.pos+(+bt.dataset.d)));
   const bad=()=>{const m=el.querySelector('.empty');m.innerHTML='This video cannot be played<br>Your device may not support this format';m.hidden=false};
   p.v.onerror=()=>{if(p.v.getAttribute('src'))bad()};
@@ -397,8 +403,10 @@ $('#seek').oninput=e=>{
     ts.forEach((p,j)=>{p.tgt=cs[j].o+(cs[j].n+d+0.5)/f;p.v.currentTime=p.tgt});
   });
 };
-$('#cmp').onclick=()=>{
-  compare=!compare;
+function setCompare(on){
+  compare=on;LK=null;
+  
+  if(compare)$('#link').checked=false;
   panes[1].el.hidden=!compare;
   $('#panes').classList.toggle('two',compare);
   $('#pairrow').hidden=!compare;$('#linkw').hidden=!compare;
@@ -406,8 +414,9 @@ $('#cmp').onclick=()=>{
   $('#cmp').classList.toggle('on',compare);
   if(!compare&&active===1)setActive(0);
   $('#cmp').textContent=compare?'Back to one video':'Compare';
-  layout();
-};
+  layout();playLabel();
+}
+$('#cmp').onclick=()=>setCompare(!compare);
 panes[1].el.hidden=true;
 $('#link').addEventListener('change',()=>{LK=null;playLabel()});$('#cmp').addEventListener('click',()=>{LK=null;playLabel()});
 document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{
@@ -563,16 +572,16 @@ function aiPrompt(){
   const kind=$('#aikind').value,ctx=$('#aictx').value.trim()||'(not entered)',bat=/Batting/.test(kind);
   const rel={'':'The relationship between A and B (which is me, which is the model) is not specified. Please compare the two.','self':'A and B are both my own form (two different days or conditions). Compare what improved, what stayed the same and what got worse.','AM':'A is my form and B is the model I want to compare with.','MA':'A is the model and B is my form.'}[$('#aipair').value]||'';
   const look=aiPair
-    ?'- The image shows 4 moments in order, numbered 1 to 4. A larger number is later in time.\n- In each moment, the left half is A and the right half is B, each with a yellow “A” or “B” mark at the top right. Refer to them as “1-A”, “1-B” and so on.\n- The same number means the same moment for A and B (both videos were moved by the same number of frames; if the sync point is used, positions from the sync point line up). The text at the bottom left is the number of frames from the sync point (or the video time).'
+    ?'- The image shows 4 moments in order, numbered 1 to 4. A larger number is later in time.\n- In each moment, the left half is A and the right half is B, each with a yellow “A” or “B” mark at the top right. Refer to them as “1-A”, “1-B” and so on.\n- The same number means the same moment for A and B (both videos were moved by the same number of frames; if the sync point is used, I lined up the same moment in both videos and set it as 0, and the text at the bottom left is the number of frames from that point; if it is not used, the text is the video time).\n- Even with the same number, A and B may not be at the same stage of the motion. Keep differences in posture separate from differences in speed and timing.'
     :'- The image shows 4 consecutive moments of the same video in order, numbered 1 to 4. A larger number is later in time.\n- The text at the bottom left of each moment is the video time. Refer to moments by number, such as “moment 2” or “moments 3 to 4”.\n- The moment marked with ● is the one I stopped on and chose.';
   const cmp=aiPair
-    ?'1. Comparison: for each number (1, 2, 3, 4), compare A and B. For each number write what differs (for example “difference between 1-A and 1-B”) and what that might mean for the swing or pitch. At the end, summarize what changed from A to B and what seems to have improved or slipped overall. Do not look at only one side.'
+    ?'1. Comparison: for each number (1, 2, 3, 4), compare A and B. For each number write what differs (for example “difference between 1-A and 1-B”) and what that might mean for the swing or pitch. If you cannot tell which is better, “no clear difference” is fine. At the end, summarize what changed from A to B and what seems to have improved or slipped overall. Do not look at only one side.'
     :'1. Change: describe in order how the timing and posture change across moments 1, 2, 3 and 4.';
   const pts=bat
     ?'start of the motion and weight shift onto the back leg, timing of the front foot landing, position of the load (stance and hand position), front shoulder and body opening, elbow and hand position, hip rotation, head position, arm extension near contact'
     :'timing of the back leg and stride foot, glove-side action (tuck and pull-off), elbow and shoulder position, trunk tilt and body opening, release point, head stability, weight shift';
   const hint=bat&&/late|jam|behind|timing/i.test(ctx)?'\n- The concern relates to timing, so pay special attention to the start of the motion, weight shift onto the back leg, front foot landing and the timing of the start of the swing.':'';
-  return 'Please review the player’s baseball mechanics based on the images ('+kind+').\n\n[Background]\n'+ctx+'\n'+(aiPair?rel+'\n':'')+'\n[How to read the image]\n'+look+'\n\n[Points to look at (candidates)]\n'+pts+'\n- These are only candidates. Judge only from what is actually visible in the images, and prioritize what seems related to my concern.'+hint+'\n- If something is hidden, too small or cannot be judged from the angle, write “cannot tell” instead of guessing.\n\n[Request]\n0. First, write one line per moment on what you can see (body direction, foot position, positions of the arms, hands and '+(bat?'bat':'ball and glove')+').\n'+cmp+'\n2. Good points (2 to 3)\n3. Points of concern (2 to 3). For each, give the evidence: which moment and which body part (number and body part).\n4. Improvement drills (3 that can be done at home or on the field, with how to do them, a rough number of reps and cautions)\n5. Advice for the next time I film (camera position, angle and timing)\n\n[Please keep in mind]\n- This is judged from still images only, so do not be definitive; use phrases such as “as far as I can see” and “it may be that…”\n- If an age or school grade is given in [Background], advise according to that age group’s growth stage and physical ability, and put injury prevention first (if none is given, do not assume an age). Do not impose professional standards\n- If I have pain or discomfort, tell me not to push through it and to consult a doctor or a coach\n- Give a short explanation for technical terms';
+  return 'Please review the player’s baseball mechanics based on the images ('+kind+').\n\n[Background]\n'+ctx+'\n'+(aiPair?rel+'\n':'')+'\n[How to read the image]\n'+look+'\n\n[Points to look at (candidates)]\n'+pts+'\n- These are only candidates. Judge only from what is actually visible in the images, and prioritize what seems related to my concern. Weight shift, rotation speed and the exact timing of foot contact are hard to judge from still images, so state that limit.'+hint+'\n- If something is hidden, too small or cannot be judged from the angle, write “cannot tell” instead of guessing.\n\n[Request]\n0. First, write one line per moment on what you can see (body direction, foot position, positions of the arms, hands and '+(bat?'bat':'ball and glove')+').\n'+cmp+'\n2. Good points (2 to 3)\n3. Points of concern (2 to 3). For each, give the evidence: which moment and which body part (number and body part).\n4. Improvement drills (up to 3 that can be done at home or on the field, with how to do them, a rough number of reps and cautions; if the cause is not clear, do not force drills and tell me what to check first)\n5. Advice for the next time I film (camera position, angle, height, frame rate (fps) and timing)\n\n[Please keep in mind]\n- This is judged from still images only, so do not be definitive; use phrases such as “as far as I can see” and “it may be that…”\n- If an age or school grade is given in [Background], advise according to that age group’s growth stage and physical ability, and put injury prevention first (if none is given, do not assume an age). Do not impose professional standards\n- If I have pain or discomfort, tell me not to push through it and to consult a doctor or a coach\n- Keep what you observed, how you interpret it and what you suggest clearly separate\n- If [Background] states a concern, make whether something helps with that concern the top criterion. Still images cannot show results such as contact quality, quality of the hit or control\n- Do not force improvement points; advise me to keep good movements\n- If something cannot be known from the images alone, say what is missing\n- Give a short explanation for technical terms';
 }
 let aiEdited=false;
 function aiFill(){
@@ -597,7 +606,7 @@ $('#aisend').onclick=async()=>{
   m.textContent=(await cp)?'The question is copied. Press and hold the image above to save it, then paste the image and the question in your AI app.':'Press and hold the question to copy it, press and hold the image above to save it, then paste both into your AI app.';
 };
 const APP_HINT='Scan the QR code to open the app';
-const APP_NAME='Form Note';
+const APP_NAME='FormNote';
 
 
 function qrMatrix(text){
@@ -766,15 +775,12 @@ const TUTS={basic:[
  {t:'Write age, batting side and concern',m:'Examples: “10 years old, right-handed, swing is late” or “40s, rec league, right-handed, jammed inside”. You can send without writing anything, but the AI’s answer becomes more specific if you do.',sel:()=>'#aictx'},
  {t:'Send to an AI app',m:'This button copies the question and opens the share screen. Choose your AI app, such as ChatGPT or Claude, and send the image and the question. If it does not appear in the share list, press and hold the image to save it, then paste the question.',sel:()=>'#aisend',last:true}
 ],cmp:[
- {t:'Use two videos',m:'Two videos are shown side by side for comparison, such as yourself and a model, or yourself last month and today.',sel:()=>'#cmp',done:()=>compare,act:()=>$('#cmp').click(),actlabel:'Use two videos'},
- {t:'Choose video A',m:'Choose the video you want reviewed for A. Example: your swing today. It is not decided which one is “me”; you can set the relationship between A and B later.',sel:()=>'#panes .pane:nth-of-type(1) .bar label',done:()=>panes[0].v.videoWidth>0,need:true},
- {t:'Choose video B',m:'Choose the video to compare with for B. Example: yourself last month, or a video of someone you want to model. Comparison is easier if both show the same motion (hitting or throwing) from the same direction (front, side, etc.).',sel:()=>'#panes .pane:nth-of-type(2) .bar label',done:()=>panes.every(p=>p.v.videoWidth>0),need:true},
- {t:'Turn off “Sync A & B”',m:'At first A and B move together. To line them up separately, turn off the checkbox first.',sel:()=>'#linkw',done:()=>!$('#link').checked,act:()=>{if($('#link').checked)$('#link').click()},actlabel:'Turn off'},
- {t:'Line A and B up on the same moment',m:'Tap the A screen to select it, then use ◀ ▶ below or the slider to reach the moment you want (for example, the moment of contact). Next tap the B screen to select it, and line B up on the same moment of the motion.',sel:()=>['#panes','.g-play','.g-seek']},
+ {t:'Choose two videos to compare',m:'Tap “Choose video” and select the two videos you want to compare at once. The first becomes A and the second becomes B, and the screen switches to two panes automatically. For example, yourself and a model, or yourself last month and today. Comparison is easier if both show the same motion (hitting or throwing) from the same direction (front, side, etc.).',sel:()=>'#panes .pane:nth-of-type(1) .bar label',done:()=>compare&&panes.every(p=>p.v.videoWidth>0),need:true,hint:'Select two videos to go to the next step'},
+ {t:'Line A and B up on the same moment',m:'At first, A and B move separately. Tap the A screen to select it, then use ◀ ▶ below or the slider to reach the moment you want (for example, the moment of contact). Next tap the B screen to select it, and line B up on the same moment of the motion.',sel:()=>['#panes','.g-play','.g-seek']},
  {t:'Set the sync point',m:'When both show the same moment, press “Sync at this moment”. This becomes the “lined-up point”, and syncing turns on automatically.',sel:()=>'#anchor',done:()=>panes.every(p=>p.anchor!=null),act:()=>$('#anchor').click(),actlabel:'Set sync point'},
  {t:'Move them together',m:'Now frame stepping and the slider move both videos together. The offset is shown as “Sync ±N frames”. “Back to sync point” returns to the lined-up point.',sel:()=>['.g-play','.g-seek']},
  {t:'Stop at the moment and press “Ask AI”',m:'Stop at the moment you want to ask about and press it. An image with A and B side by side, 4 moments around it, is created.',sel:()=>'#aimain',done:()=>!$('#snapbox').hidden&&!$('#aipanel').hidden,act:()=>$('#aimain').click(),actlabel:'Try it'},
- {t:'Choose how A and B relate',m:'Choose whether A and B are “me and a model” or “both me (before and after)”. A is not always on the left and B on the right, so this is reflected in the question.',sel:()=>'#aipair'},
+ {t:'Choose how A and B relate, and write your concern',m:'Choose whether A and B are “me and a model” or “both me (before and after)”. A is not always on the left and B on the right, so this is reflected in the question. Also write your age, batting or throwing side and concern. Example: “10 years old, right-handed, late on the swing”. You can send without writing, but the AI answer becomes more specific if you do.',sel:()=>['#aipair','#aictx']},
  {t:'Send to an AI app',m:'This button copies the question and opens the share screen. Choose your AI app and send the image and the question.',sel:()=>'#aisend',last:true}
 ]};
 let TUT=TUTS.basic;
@@ -829,7 +835,7 @@ function tutEnd(){
 }
 $('#tutbtn').onclick=()=>tutStart('basic');
 $('#tutbtn2').onclick=()=>tutStart('cmp');
-$('#tutgo').onclick=()=>tutStart('basic');
+$('#tutgo').onclick=()=>tutStart('cmp');
 $('#tutno').onclick=()=>{tutLS();$('#tutbn').hidden=true};
 addEventListener('resize',tutPlace);
 try{if(!localStorage.getItem('fn_tut'))$('#tutbn').hidden=false}catch(e){$('#tutbn').hidden=false}
