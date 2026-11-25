@@ -253,7 +253,8 @@ const panes=[0,1].map(i=>{
     
     if(fs.length>=2&&(!compare||!panes.some(q=>q.v.getAttribute('src')))){
       if(!compare)setCompare(true);
-      panes.forEach(q=>q.list=fs);panes[0].open(0);panes[1].open(1);setActive(0);return}
+      
+      panes[0].list=[fs[0]];panes[1].list=[fs[1]];panes[0].open(0);panes[1].open(0);setActive(0);return}
     p.list=fs;open(0)};
   el.querySelectorAll('.nav button').forEach(bt=>bt.onclick=()=>open(p.pos+(+bt.dataset.d)));
   const bad=()=>{const m=el.querySelector('.empty');m.innerHTML='This video cannot be played<br>Your device may not support this format';m.hidden=false};
@@ -571,12 +572,15 @@ async function buildFour(clean){
 function aiPrompt(){
   const kind=$('#aikind').value,ctx=$('#aictx').value.trim()||'(not entered)',bat=/Batting/.test(kind);
   const rel={'':'The relationship between A and B (which is me, which is the model) is not specified. Please compare the two.','self':'A and B are both my own form (two different days or conditions). Compare what improved, what stayed the same and what got worse.','AM':'A is my form and B is the model I want to compare with.','MA':'A is the model and B is my form.'}[$('#aipair').value]||'';
-  const look=aiPair
-    ?'- The image shows 4 moments in order, numbered 1 to 4. A larger number is later in time.\n- In each moment, the left half is A and the right half is B, each with a yellow “A” or “B” mark at the top right. Refer to them as “1-A”, “1-B” and so on.\n- The same number means the same moment for A and B (both videos were moved by the same number of frames; if the sync point is used, I lined up the same moment in both videos and set it as 0, and the text at the bottom left is the number of frames from that point; if it is not used, the text is the video time).\n- Even with the same number, A and B may not be at the same stage of the motion. Keep differences in posture separate from differences in speed and timing.'
-    :'- The image shows 4 consecutive moments of the same video in order, numbered 1 to 4. A larger number is later in time.\n- The text at the bottom left of each moment is the video time. Refer to moments by number, such as “moment 2” or “moments 3 to 4”.\n- The moment marked with ● is the one I stopped on and chose.';
-  const cmp=aiPair
-    ?'1. Comparison: for each number (1, 2, 3, 4), compare A and B. For each number write what differs (for example “difference between 1-A and 1-B”) and what that might mean for the swing or pitch. If you cannot tell which is better, “no clear difference” is fine. At the end, summarize what changed from A to B and what seems to have improved or slipped overall. Do not look at only one side.'
-    :'1. Change: describe in order how the timing and posture change across moments 1, 2, 3 and 4.';
+  const it=view[5]||view[4],n=it&&it.items&&it.items.length>1?it.items.length:4,sq=Array.from({length:n},(_,i)=>i+1);
+  const sub=t=>t.replace(/\{N\}/g,n).replace(/\{SEQ\}/g,sq.join('→')).replace(/\{LST\}/g,sq.join(', '));
+  const look0=aiPair
+    ?'- The image shows {N} moments in order, numbered 1 to {N}. A larger number is later in time.\n- In each moment, the left half is A and the right half is B, each with a yellow “A” or “B” mark at the top right. Refer to them as “1-A”, “1-B” and so on.\n- The same number means the same moment for A and B (both videos were moved by the same number of frames; if the sync point is used, I lined up the same moment in both videos and set it as 0, and the text at the bottom left is the number of frames from that point; if it is not used, the text is the video time).\n- Even with the same number, A and B may not be at the same stage of the motion. Keep differences in posture separate from differences in speed and timing.'
+    :'- The image shows {N} consecutive moments of the same video in order, numbered 1 to {N}. A larger number is later in time.\n- The text at the bottom left of each moment is the video time. Refer to moments by number, such as “moment 2” or “moments 3 to 4”.\n- The moment marked with ● is the one I stopped on and chose.';
+  const cmp0=aiPair
+    ?'1. Comparison: for each number ({LST}), compare A and B. For each number write what differs (for example “difference between 1-A and 1-B”) and what that might mean for the swing or pitch. If you cannot tell which is better, “no clear difference” is fine. At the end, summarize what changed from A to B and what seems to have improved or slipped overall. Do not look at only one side.'
+    :'1. Change: describe in order how the timing and posture change across moments {LST}.';
+  const look=sub(look0),cmp=sub(cmp0);
   const pts=bat
     ?'start of the motion and weight shift onto the back leg, timing of the front foot landing, position of the load (stance and hand position), front shoulder and body opening, elbow and hand position, hip rotation, head position, arm extension near contact'
     :'timing of the back leg and stride foot, glove-side action (tuck and pull-off), elbow and shoulder position, trunk tilt and body opening, release point, head stability, weight shift';
