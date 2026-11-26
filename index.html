@@ -185,7 +185,7 @@ details.draw:not([open]) .g-tools,details.draw:not([open]) .g-edit{display:none}
   <p class="hint" id="snaphint">Press and hold the image to save it.</p>
   <div class="row" style="justify-content:center"><button class="btn pri" id="snapshare" hidden>Share</button><button class="btn" id="snapclose">Close</button></div>
   <div id="aipanel" hidden>
-    <div class="row" style="justify-content:center"><select id="aikind"><option>Batting</option><option>Pitching</option></select><input id="aictx" type="text" maxlength="80" placeholder="Age, bats/throws, what to work on"></div>
+    <div class="row" style="justify-content:center"><select id="aikind"><option value="bat">Batting</option><option value="pitch">Pitching</option></select><input id="aictx" type="text" maxlength="80" placeholder="Age, bats/throws, what to work on"></div>
     <select id="aipair" hidden><option value="">A & B: not specified</option><option value="self">Both are me (different days or form)</option><option value="AM">A is me, B is the model</option><option value="MA">A is the model, B is me</option></select>
     <textarea id="aitext" rows="6" aria-label="Question for AI"></textarea>
     <button class="btn pri" id="aisend">Copy the question and send to an AI app</button>
@@ -578,7 +578,7 @@ async function buildFour(clean){
 
 
 function aiPrompt(){
-  const kind=$('#aikind').value,ctx=$('#aictx').value.trim()||'(not entered)',bat=/Batting/.test(kind);
+  const kind=$('#aikind').selectedOptions[0].textContent,ctx=$('#aictx').value.trim()||'(not entered)',bat=/Batting/.test(kind);
   const rel={'':'The relationship between A and B (which is me, which is the model) is not specified. Please compare the two.','self':'A and B are both my own form (two different days or conditions). Compare what improved, what stayed the same and what got worse.','AM':'A is my form and B is the model I want to compare with.','MA':'A is the model and B is my form.'}[$('#aipair').value]||'';
   const it=view[5]||view[4],n=it&&it.items&&it.items.length>1?it.items.length:4,sq=Array.from({length:n},(_,i)=>i+1);
   const sub=t=>t.replace(/\{N\}/g,n).replace(/\{SEQ\}/g,sq.join('→')).replace(/\{LST\}/g,sq.join(', '));
@@ -598,10 +598,10 @@ function aiPrompt(){
 let aiEdited=false;
 function aiFill(){
   $('#aipair').hidden=!aiPair;
-  try{const k=localStorage.getItem('fn_aikind'),c=localStorage.getItem('fn_aictx'),q=localStorage.getItem('fn_aipair');if(q!=null)$('#aipair').value=q;if(k)$('#aikind').value=k;if(c!=null&&!$('#aictx').value)$('#aictx').value=c}catch(e){}
+  try{const k=localStorage.getItem(LSP+'aikind'),c=localStorage.getItem(LSP+'aictx'),q=localStorage.getItem(LSP+'aipair');if(q!=null){$('#aipair').value=q;if($('#aipair').selectedIndex<0)$('#aipair').selectedIndex=0}if(k==='bat'||k==='pitch')$('#aikind').value=k;if(c!=null&&!$('#aictx').value)$('#aictx').value=c}catch(e){}
   aiEdited=false;$('#aitext').value=aiPrompt();
 }
-function aiRefresh(){try{localStorage.setItem('fn_aikind',$('#aikind').value);localStorage.setItem('fn_aictx',$('#aictx').value);localStorage.setItem('fn_aipair',$('#aipair').value)}catch(e){}if(!aiEdited)$('#aitext').value=aiPrompt()}
+function aiRefresh(){try{localStorage.setItem(LSP+'aikind',$('#aikind').value);localStorage.setItem(LSP+'aictx',$('#aictx').value);localStorage.setItem(LSP+'aipair',$('#aipair').value)}catch(e){}if(!aiEdited)$('#aitext').value=aiPrompt()}
 $('#aikind').onchange=$('#aipair').onchange=$('#aictx').oninput=aiRefresh;
 $('#aitext').oninput=()=>{aiEdited=true};
 async function copyText(t){
@@ -777,6 +777,7 @@ fixPlayW();addEventListener('resize',fixPlayW);if(document.fonts&&document.fonts
 
 
 
+const LSP=document.documentElement.lang==='ja'?'fn_':'fn_'+document.documentElement.lang+'_';
 const SUPPORT_URL='https://buymeacoffee.com/formnote';
 if(SUPPORT_URL){$('#supportlink').href=SUPPORT_URL;document.querySelector('.g-sup').hidden=false}
 const TUTS={basic:[
@@ -805,7 +806,7 @@ function tutRect(sel){
   const l=Math.min(...R.map(r=>r.left)),t=Math.min(...R.map(r=>r.top)),rt=Math.max(...R.map(r=>r.right)),b=Math.max(...R.map(r=>r.bottom));
   return{left:l,top:t,width:rt-l,height:b-t};
 }
-const tutLS=v=>{try{localStorage.setItem('fn_tut','1')}catch(e){}};
+const tutLS=v=>{try{localStorage.setItem(LSP+'tut','1')}catch(e){}};
 function tutPlace(){
   if(tutI<0)return;const st=TUT[tutI];const mk=$('#tutmask'),cd=$('#tutcard');
   const q=tutRect(st.sel());
@@ -850,7 +851,7 @@ $('#tutbtn2').onclick=()=>tutStart('cmp');
 $('#tutgo').onclick=()=>tutStart('cmp');
 $('#tutno').onclick=()=>{tutLS();$('#tutbn').hidden=true};
 addEventListener('resize',tutPlace);
-try{if(!localStorage.getItem('fn_tut'))$('#tutbn').hidden=false}catch(e){$('#tutbn').hidden=false}
+try{if(!localStorage.getItem(LSP+'tut'))$('#tutbn').hidden=false}catch(e){$('#tutbn').hidden=false}
 </script>
 </body>
 </html>
