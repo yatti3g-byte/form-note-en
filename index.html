@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="google-site-verification" content="ITxa_inRuPYXshXMjW5c9h8XO8YNBbA4dsuDdqyTWBI" />
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>FormNote</title>
-<meta name="description" content="A free tool to review baseball mechanics on video: frame by frame, angle measuring and two-video comparison. Videos stay on your device.">
+<title>FormNote – Compare Baseball Swing &amp; Pitching Videos, Free</title>
+<meta name="description" content="Free baseball form checker for youth players and parents. Put two swing or pitching videos side by side, step frame by frame, measure angles, then ask AI. No sign-up, no install. Videos never leave your device.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="FormNote">
-<meta property="og:description" content="A free tool to review baseball mechanics on video: frame by frame, angle measuring and two-video comparison. Videos stay on your device.">
+<meta property="og:title" content="FormNote – Compare Baseball Swing &amp; Pitching Videos, Free">
+<meta property="og:description" content="Free baseball form checker for youth players and parents. Put two swing or pitching videos side by side, step frame by frame, measure angles, then ask AI. No sign-up, no install. Videos never leave your device.">
 <meta property="og:url" content="https://yatti3g-byte.github.io/form-note-en/">
 <meta property="og:image" content="https://yatti3g-byte.github.io/form-note-en/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -120,13 +121,14 @@ details.draw:not([open]) .g-tools,details.draw:not([open]) .g-edit{display:none}
 #tutbn button.go{background:#fff;color:#2f7d4f;font-weight:700}
 .brand{display:flex;gap:6px;align-items:baseline;font-size:12px;line-height:1.2;color:var(--mute);padding:0 2px}.brand b{color:var(--ink);font-size:13px}
 .ver{margin:4px 2px 12px;font-size:12px;color:var(--mute)}
+.about{margin:14px 2px 6px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--mute)}.about h2{margin:0 0 4px;font-size:14px;color:var(--ink)}.about h3{margin:10px 0 2px;font-size:13px;color:var(--ink)}.about p{margin:0;line-height:1.7}.about a{color:var(--acc)}
 .family{margin:14px 2px 6px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--mute)}.family h2{margin:0 0 4px;font-size:14px;color:var(--ink)}.family p{margin:0 0 6px;line-height:1.6}.family ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}.family li{display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline;padding:4px 0}.family li a,.family li b{color:var(--ink);min-width:6.5em}.family li a{color:var(--acc);font-weight:700}
 .g-sup{text-align:center}.g-sup[hidden]{display:none}.g-sup .lnk{display:inline-block;min-height:44px}
 html,body{height:auto;min-height:100%}
 body{display:block;padding:6px}
 #app{display:flex;flex-direction:column;gap:6px;height:calc(100vh - 12px);height:calc(100dvh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
 #foot{max-width:640px;margin:0 auto;padding-bottom:10px}
-@media (orientation:landscape) and (max-height:560px){.g-sup,.brand,.family,.ver{display:none}}
+@media (orientation:landscape) and (max-height:560px){.g-sup,.brand,.family,.ver,.about{display:none}}
 </style>
 </head>
 <body>
@@ -182,8 +184,9 @@ body{display:block;padding:6px}
 </div>
 </div>
 <div id="foot">
+<section class="about" id="about"><h2>About FormNote</h2><h3>When it helps</h3><p>Between practices and games, review a swing or a pitching clip shot on your phone right away. At the bench or at home, check whether this week looks better than last week, or how your form differs from a model player, by lining up two videos on the same moment. Parents can also keep a record of a child’s progress.</p><h3>What you can do</h3><p>Step frame by frame, measure angles and compare two videos side by side. Then hand the comparison image and a ready-made question to an AI app such as ChatGPT or Claude. See the <a href="help.html" target="_blank" rel="noopener">how-to guide</a> for the steps.</p><h3>FAQ</h3><p><b>Is it free?</b> Yes. No sign-up and no install.<br><b>Are my videos uploaded?</b> No. Videos are processed only on your device.<br><b>Which videos work?</b> Landscape or portrait clips from your phone. Set the fps you filmed at in the settings.</p></section>
+    <p class="ver" id="ver">FormNote 0.1 (prototype)</p>
   <div class="g-sup" hidden><a class="lnk" id="supportlink" href="#" target="_blank" rel="noopener">☕ Support DugoutTools</a></div>
-  <p class="ver" id="ver">FormNote 0.1 (prototype)</p>
 </div>
 
 <div id="tutmask" hidden></div><div id="tutcard" hidden role="dialog" aria-live="polite"></div>
